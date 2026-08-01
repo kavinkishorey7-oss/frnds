@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wish Card — Happy Friendship Day (Fullscreen Message)</title>
+<style>
+  :root{
+    --accent:#2b7cff;
+    --panel-start:#0b1220;   /* deep navy */
+    --panel-mid:#2b0f4b;     /* indigo/purple */
+    --panel-end:rgba(43,124,255,0.10);
+    --text:#e6eefc;
+    --muted:#9aa7bf;
+    --shadow: 0 30px 80px rgba(2,6,23,0.6);
+  }
+
+  html,body{
+    height:100%;
+    margin:0;
+    font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
+    background: #000; /* page background remains black */
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* Stage - card full viewport */
+  .stage{
+    min-height:100vh;
+    display:flex;
+    align-items:stretch;
+    justify-content:stretch;
+    padding:0;
+    box-sizing:border-box;
+  }
+
+  .card{
+    width:100vw;
+    height:100vh;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    background: transparent;
+    display:block;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* Full-bleed message panel: fills viewport */
+  .message-panel{
+    position:absolute;
+    inset:0;                    /* fill the viewport */
+    background: linear-gradient(135deg, var(--panel-start) 0%, var(--panel-mid) 52%, var(--panel-end) 100%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:20px;
+    padding:6vmin 6vmin;        /* responsive padding */
+    box-sizing:border-box;
+    box-shadow: 0 12px 40px rgba(2,6,23,0.6), 0 6px 30px rgba(43,124,255,0.06);
+    border: none;               /* full-bleed - no rounded corners */
+  }
+
+  /* Headings and message */
+  .greeting{
+    color: #cfe8ff;
+    font-weight:700;
+    margin:0;
+    font-size:clamp(16px,2.2vmin,20px);
+    letter-spacing:0.2px;
+  }
+
+  .occasion{
+    font-weight:900;
+    font-size:clamp(28px,5.2vmin,48px);
+    margin:0;
+    background: linear-gradient(90deg, #ff7aa2, #2b7cff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing:-0.6px;
+  }
+
+  .who{
+    margin:0;
+    font-weight:900;
+    font-size:clamp(34px,7vmin,78px);
+    color: var(--text);
+    line-height:1.02;
+    text-align:center;
+    text-shadow: 0 10px 40px rgba(43,20,60,0.45);
+  }
+
+  .message{
+    margin:0;
+    font-size:clamp(18px,2.8vmin,32px);
+    max-width:clamp(280px,80ch,1200px);
+    color:#e6eefc;
+    line-height:1.35;
+    text-align:center;
+    white-space:pre-wrap;
+    text-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+
+  .controls{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    margin-top:6px;
+  }
+
+  .btn{
+    border:0;
+    padding:12px 20px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:800;
+    letter-spacing:0.3px;
+    background:var(--accent);
+    color:white;
+    box-shadow:0 10px 30px rgba(43,124,255,0.12);
+    font-size:clamp(14px,1.8vmin,16px);
+  }
+
+  .btn.secondary{
+    background:transparent;
+    color:var(--accent);
+    border:2px solid rgba(43,124,255,0.12);
+    box-shadow:none;
+    font-weight:700;
+  }
+
+  .footer{
+    margin-top:8px;
+    font-size:clamp(12px,1.8vmin,14px);
+    color:var(--muted);
+    text-align:center;
+  }
+
+  /* Confetti full-screen */
+  .confetti{
+    pointer-events:none;
+    position:fixed;
+    inset:0;
+    z-index:60;
+    overflow:hidden;
+  }
+  .confetti .piece{
+    position:absolute;
+    width:10px;
+    height:14px;
+    opacity:0.95;
+    transform-origin:center;
+    animation: fall linear forwards;
+    border-radius:2px;
+  }
+  @keyframes fall{
+    to{
+      transform: translateY(110vh) rotate(720deg) scale(.9);
+      opacity:0;
+    }
+  }
+
+  /* Responsive adjustments */
+  @media (max-width:700px){
+    .message-panel{ padding:6vmin 5vmin; }
+    .who{ font-size:clamp(28px,9vmin,44px); }
+    .occasion{ font-size:clamp(20px,4.5vmin,28px); }
+    .message{ font-size:clamp(16px,3.2vmin,20px); }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    .confetti .piece{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="stage" role="main">
+    <div class="card" role="region" aria-label="Fullscreen message card">
+      <div class="message-panel" id="panel">
+        <h3 class="greeting" id="greeting">Hey To my friends!</h3>
+        <div class="occasion">Happy Friendship Day</div>
+        <h1 class="who" id="who">To my friends</h1>
+        <p class="message" id="message">En happiness/sadness la oru part ah irunthathuku thanks</p>
+
+        <div class="controls" role="group" aria-label="actions">
+          <button class="btn" id="celebrateBtn">Celebrate 🎉</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="confetti" id="confettiArea" aria-hidden="true"></div>
+
+<script>
+  const confettiArea = document.getElementById('confettiArea');
+  const whoEl = document.getElementById('who');
+  const messageEl = document.getElementById('message');
+  const greetingEl = document.getElementById('greeting');
+
+  // Prefill from URL params (name, message)
+  const params = new URLSearchParams(location.search);
+  function qs(n){ return params.get(n) }
+  if (qs('name')) {
+    const name = decodeURIComponent(qs('name'));
+    whoEl.textContent = name;
+    greetingEl.textContent = `Hey ${name}!`;
+  }
+  if (qs('message')) {
+    const m = decodeURIComponent(qs('message')).replace(/\+/g,' ');
+    messageEl.textContent = m;
+  }
+
+  // Confetti helper
+  function rand(min,max){ return Math.random()*(max-min)+min }
+  function launchConfetti(count=50){
+    confettiArea.innerHTML = '';
+    const colors = ['#2b7cff','#ffd166','#6ee7b7','#ff7aa2','#b39cff','#ffb86b','#fff59d'];
+    for (let i=0;i<count;i++){
+      const el = document.createElement('div');
+      el.className = 'piece';
+      el.style.left = (rand(6,94))+'%';
+      el.style.top = (rand(-6,6))+'%';
+      el.style.background = colors[Math.floor(rand(0,colors.length))];
+      el.style.width = (Math.floor(rand(8,20))) + 'px';
+      el.style.height = (Math.floor(rand(10,24))) + 'px';
+      el.style.borderRadius = (Math.floor(rand(0,4))) + 'px';
+      const duration = rand(1400,3600);
+      el.style.animationDuration = duration + 'ms';
+      el.style.transform = `rotate(${rand(0,360)}deg)`;
+      confettiArea.appendChild(el);
+    }
+  }
+
+  // Wire celebrate button (no music)
+  document.getElementById('celebrateBtn').addEventListener('click', ()=> {
+    launchConfetti(88);
+  });
+
+  // Initial subtle confetti on load (respect reduced-motion)
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.addEventListener('load', ()=> {
+    setTimeout(()=> {
+      if (!prefersReduced) launchConfetti(12);
+    }, 600);
+  });
+</script>
+
+</body></html>
